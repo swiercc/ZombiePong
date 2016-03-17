@@ -105,94 +105,51 @@ namespace ZombiePong
 
             paddle2.Location = new Vector2(paddle2.Location.X, ball.Center.Y - 80);
 
+            bool colliding = false;
+
             //ball colide with P1 paddle
-            if (ball.IsBoxColliding(paddle1.BoundingBoxRect))
+            if (ball.IsBoxColliding(paddle1.BoundingBoxRect) || ball.IsBoxColliding(paddle2.BoundingBoxRect))
             {
+                //ball colliding with panel
+                colliding = true;
+
                 //ball going down
                 if (ball.Velocity.Y < 0)
                 {
                     //hits above middle
                     if (ball.Location.Y > paddle1.BoundingBoxRect.Center.Y)
                     {
-                        ball.Velocity = new Vector2(ball.Velocity.X, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * -100);
+                        ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * -1);
                     }
                     else
                     {
-                        ball.Velocity = new Vector2(ball.Velocity.X, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * 100);
+                        ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * 1);
                     }
                 }
-
-
-
                 //ball going up
-                if (ball.Location.Y > paddle1.BoundingBoxRect.Center.Y)
-                {
-                    ball.Velocity = new Vector2(ball.Velocity.X * -1, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * 100);
-
-                }
-                else
-                {
-                    ball.Velocity = new Vector2(ball.Velocity.X * -1, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * -100);
-                }
-
                 if (ball.Velocity.Y > 0)
                 {
                     if (ball.Location.Y > paddle1.BoundingBoxRect.Center.Y)
                     {
                         ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * 1);
-
                     }
                     else
                     {
                         ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * -1);
                     }
                 }
-            }
-
-                if (ball.IsBoxColliding(paddle2.BoundingBoxRect))
-            {
-                //ball going down
-                if (ball.Velocity.Y < 0)
-                {
-                    //hits above middle
-                    if (ball.Location.Y > paddle1.BoundingBoxRect.Center.Y)
-                    {
-                        ball.Velocity = new Vector2(ball.Velocity.X, (float)Math.Cos(ball.Location.Y - paddle2.Center.Y) * -100);
-                    }
-                    else
-                    {
-                        ball.Velocity = new Vector2(ball.Velocity.X, (float)Math.Cos(ball.Location.Y - paddle2.Center.Y) * 100);
-                    }
-                }
-
-
-
-                 //ball going up
-                if (ball.Location.Y > paddle2.BoundingBoxRect.Center.Y)
-                {
-                    ball.Velocity = new Vector2(ball.Velocity.X * -1, (float)Math.Cos(ball.Location.Y - paddle2.Center.Y) * 100);
-
-                }
-                else
-                {
-                    ball.Velocity = new Vector2(ball.Velocity.X * -1, (float)Math.Cos(ball.Location.Y - paddle2.Center.Y) * -100);
-                }
-
-                if (ball.Velocity.Y > 0)
-                {
-                    if (ball.Location.Y > paddle1.BoundingBoxRect.Center.Y)
-                    {
-                        ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * 1);
-                
-                    }
-                    else
-                    {
-                        ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * -1);
-                    }
-                }
-
                 ball.Velocity = ball.Velocity * new Vector2(-1, 1);
             }
+
+            int BallCount = 3;
+
+            if (!(ball.IsBoxColliding(paddle1.BoundingBoxRect) || ball.IsBoxColliding(paddle2.BoundingBoxRect)) && colliding == false && BallCount > 0 && ((ball.Location.X == 0) || (ball.Location.X == 768)))
+            {
+                ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(400, 55));
+                BallCount -= 1;
+
+            }
+
             if (ball.Location.Y <= 0)
                 ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * -1);
 
@@ -205,6 +162,14 @@ namespace ZombiePong
 
                 // Zombie logic goes here..
                 zombies[i].FlipHorizontal = false;
+
+
+                //if (zombies.IsBoxColliding(ball.BoundingBoxRect))
+                //{
+                //    zombies.Velocity = new Vector2(zombies.Velocity.X * -1, ball.Velocity.Y);
+
+
+                //}
             }
 
             base.Update(gameTime);
@@ -216,7 +181,7 @@ namespace ZombiePong
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Blue);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
 
@@ -237,9 +202,3 @@ namespace ZombiePong
         }
     }
 }
-
-
-
-
-
-
