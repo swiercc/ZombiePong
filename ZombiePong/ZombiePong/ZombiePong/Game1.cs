@@ -64,6 +64,8 @@ namespace ZombiePong
             ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(400, 55));
 
             SpawnZombie(new Vector2(400, 400), new Vector2(-20, 0));
+
+            
         }
 
         /// <summary>
@@ -142,12 +144,24 @@ namespace ZombiePong
             }
 
             int BallCount = 3;
-
-            if (!(ball.IsBoxColliding(paddle1.BoundingBoxRect) || ball.IsBoxColliding(paddle2.BoundingBoxRect)) && colliding == false && BallCount > 0 && ((ball.Location.X == 0) || (ball.Location.X == 768)))
+            int P1Score = 0;
+            int P2Score = 0;
+            Window.Title = ("Ball Count: " + BallCount + " Player 1 Score is " + P1Score + " Player 2 Score is " + P2Score);
+            if (!(ball.IsBoxColliding(paddle1.BoundingBoxRect) || ball.IsBoxColliding(paddle2.BoundingBoxRect)) && colliding == false && BallCount > 0  )
             {
-                ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(400, 55));
+                if((ball.Location.X == 0))
+                {
+                    ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(400, 55));
                 BallCount -= 1;
-
+                P1Score += 1;
+                }
+                if ((ball.Location.X == 768))
+                {
+                    ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(400, 55));
+                BallCount -= 1;
+                    P2Score += 1;
+                }
+                
             }
 
             if (ball.Location.Y <= 0)
@@ -163,14 +177,21 @@ namespace ZombiePong
                 // Zombie logic goes here..
                 zombies[i].FlipHorizontal = false;
 
+                if (zombies[i].Location.X == 768 || zombies[i].Location.Y == 0)
+                {
+                    zombies[i].Velocity = new Vector2(zombies[i].Velocity.X * -1, zombies[i].Velocity.Y);
+                }
 
-                //if (zombies.IsBoxColliding(ball.BoundingBoxRect))
-                //{
-                //    zombies.Velocity = new Vector2(zombies.Velocity.X * -1, ball.Velocity.Y);
+                if (zombies[i].IsBoxColliding(ball.BoundingBoxRect))
+                {
+                    ball.Velocity = new Vector2(ball.Velocity.X * -1, ball.Velocity.Y);
+                    
 
-
-                //}
+                    
+                }
             }
+
+
 
             base.Update(gameTime);
         }
