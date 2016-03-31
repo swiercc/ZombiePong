@@ -21,6 +21,9 @@ namespace ZombiePong
         Texture2D background, spritesheet;
 
         Sprite paddle1, paddle2, ball;
+        
+        int P1Score = 0;
+        int P2Score = 0;
 
         List<Sprite> zombies = new List<Sprite>();
 
@@ -100,9 +103,24 @@ namespace ZombiePong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+
+
+
             // TODO: Add your update logic here
             ball.Update(gameTime);
             MouseState ms = Mouse.GetState();
+
+            if (ball.Location.X < -20)
+            {
+                ball.Location = new Vector2(700, 350);
+                P2Score += 1;
+            }
+            if (ball.Location.X > 1044)
+            {
+                ball.Location = new Vector2(400, 350);
+                P1Score += 1;
+            }
+
             paddle1.Location = new Vector2(paddle1.Location.X, ms.Y);
 
             paddle2.Location = new Vector2(paddle2.Location.X, ball.Center.Y - 80);
@@ -112,9 +130,8 @@ namespace ZombiePong
             //ball colide with P1 paddle
             if (ball.IsBoxColliding(paddle1.BoundingBoxRect) || ball.IsBoxColliding(paddle2.BoundingBoxRect))
             {
-                //ball colliding with panel
-                colliding = true;
-
+                
+               
                 //ball going down
                 if (ball.Velocity.Y < 0)
                 {
@@ -143,22 +160,21 @@ namespace ZombiePong
                 ball.Velocity = ball.Velocity * new Vector2(-1, 1);
             }
 
-            int BallCount = 3;
-            int P1Score = 0;
-            int P2Score = 0;
-            Window.Title = ("Ball Count: " + BallCount + " Player 1 Score is " + P1Score + " Player 2 Score is " + P2Score);
-            if (!(ball.IsBoxColliding(paddle1.BoundingBoxRect) || ball.IsBoxColliding(paddle2.BoundingBoxRect)) && colliding == false && BallCount > 0  )
+            
+            
+            Window.Title = ( " Player 1 Score is " + P1Score + " Player 2 Score is " + P2Score);
+            if (!(ball.IsBoxColliding(paddle1.BoundingBoxRect) || ball.IsBoxColliding(paddle2.BoundingBoxRect))  )
             {
                 if((ball.Location.X == 0))
                 {
                     ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(400, 55));
-                BallCount -= 1;
+                
                 P1Score += 1;
                 }
                 if ((ball.Location.X == 768))
                 {
                     ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(400, 55));
-                BallCount -= 1;
+                
                     P2Score += 1;
                 }
                 
@@ -177,17 +193,15 @@ namespace ZombiePong
                 // Zombie logic goes here..
                 zombies[i].FlipHorizontal = false;
 
-                if (zombies[i].Location.X == 768 || zombies[i].Location.Y == 0)
+                if (zombies[i].Location.X < -20 || zombies[i].Location.X > 1044)
                 {
-                    zombies[i].Velocity = new Vector2(zombies[i].Velocity.X * -1, zombies[i].Velocity.Y);
+                    zombies[i].Velocity = new Vector2(zombies[i].Velocity.X * -1);
                 }
 
                 if (zombies[i].IsBoxColliding(ball.BoundingBoxRect))
                 {
                     ball.Velocity = new Vector2(ball.Velocity.X * -1, ball.Velocity.Y);
-                    
-
-                    
+                    //make the bal bump the zombie
                 }
             }
 
